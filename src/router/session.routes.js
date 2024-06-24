@@ -4,7 +4,7 @@ const router = express.Router();
 const sessionController = require("../controllers/session_controller");
 
 //GET SESSIONS
-router.get("/", sessionController.getSessions);
+router.get("/", sessionController.getAllSessions);
 //GET SESSION BY SESSION_ID
 router.get("/:id", sessionController.getSessionById);
 //GET SESSION EXERCISES BY SESSION_ID
