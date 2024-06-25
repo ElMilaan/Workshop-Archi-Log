@@ -13,8 +13,8 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   const userId = req.params.id;
-  const query = `SELECT * FROM User WHERE user_id = ${userId}`;
-  db.query(query, (error, results) => {
+  const query = `SELECT * FROM User WHERE user_id = ?`;
+  db.query(query, [userId], (error, results) => {
     if (error) {
       console.error("Erreur lors de l'exécution de la requête:", error);
       return res.status(500).json({ error: error.message });
@@ -26,8 +26,62 @@ module.exports.getUserById = (req, res) => {
   });
 };
 
-module.exports.addUser = async (res, req) => {};
+module.exports.addUser = (req, res) => {
+  const { mail, password, name, firstname, age } = req.body;
 
-module.exports.updateUserById = async (res, req) => {};
+  if (!mail || !password || !name || !firstname || !age) {
+    return res
+      .status(400)
+      .send("mail, password, name, firstname and age are required");
+  }
 
-module.exports.deleteUserById = async (res, req) => {};
+  const sql =
+    "INSERT INTO User (mail, password, name, firstname, age) VALUES (?, ?, ?, ?, ?)";
+
+  db.query(sql, [mail, password, name, firstname, age], (error, results) => {
+    if (error) {
+      console.error(
+        "Erreur lors de l'insertion de l'utilisateur : " + error.stack
+      );
+      return res.status(500).send("Erreur du serveur");
+    }
+
+    res.status(201).send(`Utilisateur ajouté avec l'ID : ${results.insertId}`);
+  });
+};
+
+module.exports.updateUserById = (req, res) => {
+  const user_id = req.params.id;
+  const { mail, password, name, firstname, age } = req.body;
+
+  const sql = `UPDATE user SET mail = ?, password = ?, name = ?, firstname = ?, age = ? WHERE user_id = ?`;
+
+  db.query(
+    sql,
+    [mail, password, name, firstname, age, user_id],
+    (error, results) => {
+      if (error) {
+        console.error(
+          "Erreur lors de l'update de l'utilisateur : " + error.stack
+        );
+        return res.status(500).send("Erreur du serveur");
+      }
+
+      res.status(200).json({ message: "User updated successfully" });
+    }
+  );
+};
+
+module.exports.deleteUserById = (req, res) => {
+  const user_id = req.params.id;
+
+  const sql = "DELETE FROM User Where user_id = ?";
+  db.query(sql, [user_id], (error, results) => {
+    if (error) {
+      console.error("Erreur lors du delete de l'utilisateur : " + error.stack);
+      return res.status(500).send("Erreur du serveur");
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  });
+};
