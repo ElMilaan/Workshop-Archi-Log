@@ -6,10 +6,23 @@ require("dotenv").config({ path: "../../config/.env" });
 
 const maxAge = 3 * 24 * 60 * 60 * 1000; // l'"age" maximum avant expiration d'un token (3 jours en millisecondes)
 
-const createToken = (id, mail) => {
-  return jwt.sign({ id: id, mail: mail }, process.env.SECRET_TOKEN, {
+const createToken = (id, mail, name, firstname, age, admin) => {
+  const payload = {
+    id: id,
+    mail: mail,
+    name: name,
+    firstname: firstname,
+    age: age,
+    admin: admin,
+  };
+
+  const secretKey = process.env.SECRET_TOKEN;
+  const options = {
     expiresIn: maxAge,
-  });
+    algorithm: "HS256",
+  };
+
+  return jwt.sign(payload, secretKey, options);
 };
 
 module.exports.signUp = async (req, res) => {
@@ -43,7 +56,16 @@ module.exports.signIn = async (req, res) => {
         return res.status(401).json({ message: "Incorrect mail or password" });
       }
 
-      const token = createToken(user.user_id, user.mail);
+      const token = createToken(
+        user.user_id,
+        user.mail,
+        user.name,
+        user.firstname,
+        user.age,
+        user.admin
+      );
+
+      console.log(token);
 
       return res.status(200).json({ token });
     });
