@@ -58,6 +58,21 @@ module.exports.getSessionExerciseById = (req, res) => {
   });
 };
 
+module.exports.getSessionByUserId = (req, res) => {
+  const userId = req.params.user_id;
+  const query = `SELECT * FROM Session WHERE user_id = ?`;
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error("Erreur lors de l'exécution de la requête:", error);
+      return res.status(500).json({ error: error.message });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Session or exercise not found" });
+    }
+    res.json(results[0]);
+  });
+};
+
 module.exports.addSession = (req, res) => {
   const { user_id } = req.body;
 

@@ -1,4 +1,5 @@
 const db = require("../../config/db");
+const bcrypt = require("bcrypt");
 
 module.exports.getAllUsers = (req, res) => {
   const query = "SELECT * FROM User";
@@ -26,7 +27,7 @@ module.exports.getUserById = (req, res) => {
   });
 };
 
-module.exports.addUser = (req, res) => {
+module.exports.addUser = async (req, res) => {
   const { mail, password, name, firstname, age } = req.body;
 
   if (!mail || !password || !name || !firstname || !age) {
@@ -35,19 +36,28 @@ module.exports.addUser = (req, res) => {
       .send("mail, password, name, firstname and age are required");
   }
 
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
   const sql =
     "INSERT INTO User (mail, password, name, firstname, age) VALUES (?, ?, ?, ?, ?)";
 
-  db.query(sql, [mail, password, name, firstname, age], (error, results) => {
-    if (error) {
-      console.error(
-        "Erreur lors de l'insertion de l'utilisateur : " + error.stack
-      );
-      return res.status(500).send("Erreur du serveur");
-    }
+  db.query(
+    sql,
+    [mail, hashedPassword, name, firstname, age],
+    (error, results) => {
+      if (error) {
+        console.error(
+          "Erreur lors de l'insertion de l'utilisateur : " + error.stack
+        );
+        return res.status(500).send("Erreur du serveur");
+      }
 
-    res.status(201).send(`Utilisateur ajouté avec l'ID : ${results.insertId}`);
-  });
+      res
+        .status(201)
+        .send(`Utilisateur ajouté avec l'ID : ${results.insertId}`);
+    }
+  );
 };
 
 module.exports.updateUserById = (req, res) => {

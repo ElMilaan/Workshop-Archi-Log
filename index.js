@@ -8,7 +8,7 @@ const port = process.env.PORT;
 const app = express();
 
 app.use(express.json());
-app.use("/api/user", userRoutes); //gère les redirections utilisateurs (les routes)
+app.use("/api/user", userRoutes);
 app.use("/api/exercise", exerciseRoutes);
 app.use("/api/session", sessionRoutes);
 
