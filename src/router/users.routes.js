@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 const userController = require("../controllers/user_controller");
+const authController = require("../controllers/auth_controller");
 
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
 
-router.post("/", userController.addUser);
+router.post("/signup", authController.signUp);
+router.post("/signin", authController.signIn);
 
 router.put("/:id", userController.updateUserById);
 

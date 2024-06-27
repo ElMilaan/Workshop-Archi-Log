@@ -7,6 +7,7 @@ router.get("/", sessionController.getAllSessions);
 router.get("/:id", sessionController.getSessionById);
 router.get("/exercise/:id", sessionController.getSessionExercises);
 router.get("/exercise/:id/:ex_id", sessionController.getSessionExerciseById);
+router.get("user/:user_id", sessionController.getSessionByUserId);
 
 router.post("/", sessionController.addSession);
 router.post("/exercise/:id", sessionController.addSessionExercise);
