@@ -65,8 +65,6 @@ module.exports.signIn = async (req, res) => {
         user.admin
       );
 
-      console.log(token);
-
       return res.status(200).json({ token });
     });
   });
