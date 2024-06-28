@@ -20,7 +20,37 @@ module.exports.getExerciseById = (req, res) => {
       return res.status(500).json({ error: error.message });
     }
     if (results.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Exercise not found" });
+    }
+    res.json(results[0]);
+  });
+};
+
+module.exports.getInstrumentById = (req, res) => {
+  const exerciseId = req.params.id;
+  const query = `SELECT name_instrument FROM Instrument i JOIN Exercice e On i.instrument_id = e.instrument_id WHERE exercice_id = ?`;
+  db.query(query, [exerciseId], (error, results) => {
+    if (error) {
+      console.error("Erreur lors de l'exécution de la requête:", error);
+      return res.status(500).json({ error: error.message });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Instrument not found" });
+    }
+    res.json(results[0]);
+  });
+};
+
+module.exports.getIdByName = (req, res) => {
+  const exerciseName = req.params.name;
+  const query = "SELECT exercice_id FROM Exercice WHERE title = ?";
+  db.query(query, [exerciseName], (error, results) => {
+    if (error) {
+      console.error("Erreur lors de l'exécution de la requête:", error);
+      return res.status(500).json({ error: error.message });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Exercise not found" });
     }
     res.json(results[0]);
   });
