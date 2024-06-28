@@ -20,7 +20,7 @@ module.exports.getExerciseById = (req, res) => {
       return res.status(500).json({ error: error.message });
     }
     if (results.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Exercise not found" });
     }
     res.json(results[0]);
   });
@@ -35,7 +35,7 @@ module.exports.getInstrumentById = (req, res) => {
       return res.status(500).json({ error: error.message });
     }
     if (results.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Instrument not found" });
     }
     res.json(results[0]);
   });
@@ -50,7 +50,7 @@ module.exports.getIdByName = (req, res) => {
       return res.status(500).json({ error: error.message });
     }
     if (results.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Exercise not found" });
     }
     res.json(results[0]);
   });
